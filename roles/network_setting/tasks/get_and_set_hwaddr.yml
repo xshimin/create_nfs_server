@@ -1,0 +1,20 @@
+# network_setting
+#  - main.yml
+#    - change_nwfiles.yml
+#      - get_and_set_hwaddr.yml
+---
+- name: set HWADDR
+  shell: "ip a s {{ nw_devicename }} | grep 'link/ether' | awk '{ print $2 }' ; exit 0"
+  changed_when: False
+  check_mode: no
+  register: network_setting_result_hwaddr
+
+- name: assert if hwaddr was not found
+  assert:
+    that:
+    - network_setting_result_hwaddr.stdout != ""
+    msg: "hwaddr was not found"
+
+- name: set_fast hwaddr
+  set_fact:
+    network_hwaddr: "{{ network_setting_result_hwaddr.stdout | upper }}"

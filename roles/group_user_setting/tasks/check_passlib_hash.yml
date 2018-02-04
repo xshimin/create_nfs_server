@@ -1,0 +1,16 @@
+# group_user_setting
+# - main.yml
+#   - check_passlib_hash.yml
+---
+- name: check python passlib.hash installed
+  shell: python -c "from passlib.hash import *" ; echo $?
+  changed_when: False
+  check_mode: no
+  register: group_user_setting_result_passlibhash
+  delegate_to: "localhost"
+
+- name: assert if passlibhash failed
+  assert:
+    that:
+    - group_user_setting_result_passlibhash.stdout == "0"
+    msg: "passlib_hash failed"

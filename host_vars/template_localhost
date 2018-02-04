@@ -1,0 +1,4 @@
+ansible_ssh_host: "xxx.xxx.xxx.xxx"
+ansible_ssh_user: "xxxx"
+ansible_ssh_pass: "xxxx"
+ansible_become_pass: "xxxx"

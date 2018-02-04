@@ -1,0 +1,15 @@
+# firewall_setting
+# - main.yml
+#   - setup_fwservices.yml
+---
+- name: setup firewall services
+  firewalld:
+    zone: "{{ item.zone }}"
+    service: "{{ item.service }}"
+    permanent: True
+    state: enabled
+  register: fw_service_result
+
+- name: set_fact firewalld restart flag
+  set_fact:
+    fwd_restart_flag: "{{ fwd_restart_flag or fw_service_result.changed }}"

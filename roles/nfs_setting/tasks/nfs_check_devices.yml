@@ -1,0 +1,15 @@
+# nfs_setting
+# - main.yml
+#  - nfs_check_devices.yml
+---
+- name: check state nfs mount devices
+  stat:
+    path: "{{ np.mnt_device }}"
+  changed_when: False
+  register: nfs_setting_result_mount_dev
+
+- name: assert if nfs mount devices does not exist
+  assert:
+    that:
+    - nfs_setting_result_mount_dev.stat.exists == True
+    msg: "no such device {{ np.mnt_device }}"

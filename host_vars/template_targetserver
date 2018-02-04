@@ -1,0 +1,90 @@
+ansible_ssh_host: "xxx.xxx.xxx.xxx"
+ansible_ssh_user: "xxxx"
+ansible_ssh_pass: "xxxx"
+ansible_become_pass: "xxxx"
+
+##################################
+### common vars                ###
+##################################
+# server hostname
+com_hostname: "xxxxx"
+# disk_devices
+com_device01: "/dev/disk/by-id/*************"
+# network interfaces
+com_nw_intf01: "ensxxx"
+
+##################################
+### vars for roles             ###
+##################################
+# network_setting ################
+network_params:
+  - devicename: "ensxxx"
+    onboot: "yes"
+    type: "Ethernet"
+    bootproto: "none"
+    hwaddr: True
+    ipaddr: "xxx.xxx.xxx.xxx"
+    prefix: "xx"
+    geteway: "xxx.xxx.xxx.xxx"
+    dns1: "xxx.xxx.xxx.xxx"
+    zone: "xxx"
+
+# group_user_setting #############
+# group
+group_params:
+  - groupname: "xxx"
+    groupid: "xxx"
+# user
+user_params:
+  - username: "xxxx"
+    useruid: "xxxx"
+    usershell: "xxxx"
+    userprimarygroup: "xxxx"
+    usergroups: "xxxx"
+    userpasswd: "xxxx"
+
+# yum_install_update #############
+yum_packages:
+  - "xxx"
+
+# set service
+service_params:
+　enable:
+    - servicename: "xxx.service"
+　disable:
+    - servicename: "xxx.service"
+# other:
+#   - servicename: "xxx.service"
+#     servicestate: "started"
+#     serviceenabled: "no"
+
+# nfs_setting ####################
+＃nfs_params:
+＃  fstab_mountpoint: "xxxxxxx"
+＃  mount_params:
+＃      - mnt_point: "xxx"
+＃        mnt_owner: "xxx"
+＃        mnt_group: "xxx"
+＃        mnt_mode: "xxx"
+＃        mnt_device: "{{ com_device01 }}"
+＃  etc_exports: "xxxxxx"
+＃  etc_sysconfig_nfs:
+＃    mountd_port:
+＃      - before: "#MOUNTD_PORT=.*"
+＃        after: "MOUNTD_PORT=xxx"
+＃    statd_port:
+＃      - before: "#STATD_PORT=.*"
+＃        after: "STATD_PORT=xxxx"
+
+# firewall_setting ###############
+firewall_params:
+  services:
+    - zone: "public"
+      service: "xxx"
+  ports:
+    - zone: "public"
+      port: "xxx/udp"
+    - zone: "public"
+      port: "xxx/tcp"
+
+# END #

@@ -1,0 +1,115 @@
+# nfs_setting
+# - main.yml
+---
+- name: add nfs dir
+  file:
+    path: "{{ item.mnt_point }}"
+    state: "directory"
+    owner: "{{ item.mnt_owner }}"
+    group: "{{ item.mnt_group }}"
+    mode: "{{ item.mnt_mode }}"
+  with_items:
+  - "{{ nfs_params.mount_params }}"
+
+- name: include nfs_check_devices
+  include_tasks: nfs_check_devices.yml
+  vars:
+    np: "{{ item }}"
+  with_items:
+  - "{{ nfs_params.mount_params }}"
+
+- name: set flag Flase
+  set_fact:
+    nfs_fstab_changed_flag: False
+
+- name: include add_nfsdir_to_fstab.yml
+  include_tasks: add_nfsdir_to_fstab.yml
+  with_items:
+  - "{{ nfs_params }}"
+
+- block:
+  # start block
+  - name: mount -a
+    command: mount -a
+  
+  - name: mount | grep nfs
+    shell: "mount | grep {{ item.mnt_point }}"
+    with_items: "{{ nfs_params.mount_params }}"
+
+  - name: add nfs dir
+    file:
+      path: "{{ item.mnt_point }}"
+      state: "directory"
+      owner: "{{ item.mnt_owner }}"
+      group: "{{ item.mnt_group }}"
+      mode: "{{ item.mnt_mode }}"
+    with_items:
+    - "{{ nfs_params.mount_params }}"
+
+  - name: reboot
+    command: sleep 2 && systemctl reboot
+    async: 1
+    poll: 0
+
+  - name: wait for ssh connection failed
+    wait_for:
+      host: inventory_hostname
+      port: 22
+      search_regex: OpenSSH
+      state: stopped
+      delay: 1
+      timeout: 300
+    delegate_to: localhost
+
+  - name: wait for ssh connection is normal
+    wait_for_connection:
+      delay: 30
+      timeout: 300
+
+  - name: mount | grep nfs
+    shell: "mount | grep {{ item.mnt_point }}"
+    with_items: "{{ nfs_params.mount_params }}"
+
+  # end block
+  when: nfs_fstab_changed_flag == True
+
+- name: add params /etc/exports
+  lineinfile:
+    path: "/etc/exports"
+    line: "{{ item.etc_exports }}"
+    owner: root
+    group: root
+    mode: "0644"
+  with_items:
+  - "{{ nfs_params }}"
+
+- name: change params /etc/sysconfig/nfs
+  replace:
+    path: "/etc/sysconfig/nfs"
+    regexp: "{{ item.before }}"
+    replace: "{{ item.after }}"
+    owner: root
+    group: root
+    mode: "0644"
+  with_items:
+  - "{{ nfs_params.etc_sysconfig_nfs.mountd_port }}"
+  - "{{ nfs_params.etc_sysconfig_nfs.statd_port }}"
+
+- name: change params /etc/modprobe.d/lockd.conf
+  replace:
+    path: "/etc/modprobe.d/lockd.conf"
+    regexp: "{{ item.before }}"
+    replace: "{{ item.after }}"
+    owner: root
+    group: root
+    mode: "0644"
+  with_items:
+  - "{{ nfs_params.etc_modprobe_d_lockd_conf.nlockmgr }}"
+
+#- name: set samba user password
+
+- name: restart nfs-server.service
+  systemd:
+    name: "nfs-server.service"
+    state: "restarted"
+    daemon_reload: "yes"

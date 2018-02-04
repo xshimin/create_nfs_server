@@ -1,0 +1,33 @@
+DEVICE="{{ nw.devicename }}"
+NAME="{{ nw.devicename }}"
+ONBOOT="{{ nw.onboot }}"
+{% if nw.type == True %}
+TYPE="{{ nw.type }}"
+{% endif %}
+{% if nw.bootproto == True %}
+BOOTPROTO="{{ nw.bootproto }}"
+{% endif %}
+{% if nw.hwaddr == True %}
+HWADDR="{{ network_hwaddr }}"
+{% endif %}
+{% if nw.ipaddr is defined %}
+IPADDR="{{ nw.ipaddr }}"
+{% endif %}
+{% if nw.prefix is defined %}
+PREFIX="{{ nw.prefix }}"
+{% endif %}
+{% if nw.ipaddr2 is defined %}
+IPADDR2="{{ nw.ipaddr2 }}"
+{% endif %}
+{% if nw.prefix2 is defined %}
+PREFIX2="{{ nw.prefix2 }}"
+{% endif %}
+{% if nw.geteway is defined %}
+GATEWAY="{{ nw.geteway }}"
+{% endif %}
+{% if nw.dns1 is defined %}
+DNS1="{{ nw.dns1 }}"
+{% endif %}
+{% if nw.zone is defined %}
+ZONE="{{ nw.zone }}"
+{% endif %}

@@ -1,0 +1,18 @@
+# ssh_setting
+# - main.yml
+#   - setup_sshd_config_replace.yml
+---
+- name: change params sshd_config [replace]
+  replace:
+    path: "/etc/ssh/sshd_config"
+    regexp: "{{ item.before }}"
+    replace: "{{ item.after }}"
+    owner: root
+    group: root
+    mode: "0644"
+  register: ssh_config_result
+    
+- name: set_fact sshd restart flag
+  set_fact:
+    sshd_restart_flag: "{{ sshd_restart_flag or ssh_config_result.changed }}"
+
