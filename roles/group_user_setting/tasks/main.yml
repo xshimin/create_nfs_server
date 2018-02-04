@@ -1,0 +1,6 @@
+# group_user_setting
+# - main.yml
+---
+- include_tasks: check_passlib_hash.yml
+- include_tasks: group_setting.yml
+- include_tasks: user_setting.yml

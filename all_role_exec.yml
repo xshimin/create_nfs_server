@@ -1,0 +1,14 @@
+---
+  - hosts: fileservergp
+    become: true
+    become_user: root
+    roles:
+      - network_setting
+      - group_user_setting
+      - yum_install_update
+      - service_setting
+      - firewall_setting
+      - nfs_setting
+      - ssh_setting
+      - samba_setting
+

@@ -1,0 +1,29 @@
+# samba_setting
+# - main.yml
+---
+#- name: set samba user password
+
+- name: template /etc/samba/smb.conf
+  template:
+    src: "etc_samba_smbconf_fileserver01.j2"
+    dest: "/etc/samba/smb.conf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    backup: yes
+  register: result_smbconf
+
+- block:
+  - name: restart smb.service
+    systemd:
+      name: "{{ item }}"
+      state: "restarted"
+    with_items:
+      - "smb.service"
+      - "nmb.service"
+
+  - name: selinux
+    command: chcon -t samba_share_t {{ item }} -R
+    with_items: "{{ samba_params.smb_dir_list }}"
+
+  when: result_smbconf.changed == True

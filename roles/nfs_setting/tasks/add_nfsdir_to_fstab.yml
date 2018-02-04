@@ -1,0 +1,16 @@
+# nfs_setting
+# - main.yml
+#   - add_nfsdir_to_fstab.yml
+---
+- name: add param to /etc/fstab for NFS
+  lineinfile:
+    path: "/etc/fstab"
+    line: "{{ item.fstab_mountpoint }}"
+    owner: root
+    group: root
+    mode: "0644"
+  register: add_param_fstab_result
+
+- name: set_fact nfs flag change 
+  set_fact:
+    nfs_fstab_changed_flag: "{{ add_param_fstab_result.changed or nfs_fstab_changed_flag }}"

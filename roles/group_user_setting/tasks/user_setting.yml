@@ -1,0 +1,29 @@
+# group_user_setting
+# - main.yml
+#   - user_setting.yml
+---
+- name: add users
+  user:
+    name: "{{ item.username }}"
+    uid: "{{ item.useruid }}"
+    shell: "{{ item.usershell }}"
+    group: "{{ item.userprimarygroup }}"
+    groups: "{{ item.usergroups }}"
+    password: "{{ item.userpasswd | password_hash('sha512') }}"
+    state: present
+  when: user_params.usergroups is defined
+  with_items:
+  - "{{ user_params }}"
+
+- name: add users
+  user:
+    name: "{{ item.username }}"
+    uid: "{{ item.useruid }}"
+    shell: "{{ item.usershell }}"
+    group: "{{ item.userprimarygroup }}"
+    groups: "{{ item.usergroups }}"
+    password: "{{ item.userpasswd | password_hash('sha512') }}"
+    state: present
+  when: user_params.usergroups is not defined
+  with_items:
+  - "{{ user_params }}"

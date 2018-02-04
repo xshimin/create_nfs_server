@@ -1,0 +1,18 @@
+# network_setting
+#  - main.yml
+---
+- name: set_fact network restart flag
+  set_fact:
+    nw_restart_flag: False
+
+- include_tasks: change_nwfiles.yml
+  vars:
+    nw: "{{ item }}"
+  with_items:
+  - "{{ network_params }}"
+
+- name: restart network.service if NW interface was changed
+  systemd:
+    name: "network.service"
+    state: "restarted"
+  when: nw_restart_flag == True

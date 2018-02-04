@@ -1,0 +1,16 @@
+# firewall_setting
+# - main.yml
+#   - setup_fwports.yml
+---
+- name: set firewall interface
+  firewalld:
+    zone: "{{ item.zone }}"
+    interface: "{{ item.ifname }}"
+    permanent: true
+    state: enabled
+  register: fw_interface_result
+
+- name: set_fact firewalld restart flag
+  set_fact:
+    fwd_restart_flag: "{{ fwd_restart_flag or fw_interface_result.changed }}"
+

@@ -1,0 +1,11 @@
+# group_user_setting
+# - main.yml
+#   - group_setting.yml
+---
+- name: add groups
+  group:
+    name: "{{ item.groupname }}"
+    gid: "{{ item.groupid }}"
+    state: present
+  with_items:
+  - "{{ group_params }}"

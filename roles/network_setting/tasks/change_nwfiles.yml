@@ -1,0 +1,28 @@
+# network_setting
+#  - main.yml
+#    - change_nwfiles.yml
+---
+- name: include get_and_set_hwaddr
+  include_tasks: get_and_set_hwaddr.yml
+  vars:
+    nw_devicename: "{{ nw.devicename }}"
+  when: nw.hwaddr == True
+
+- name: set_fact ifcfg-{{ nw.devicename }}
+  set_fact:
+    ifcfg_name: "ifcfg-{{ nw.devicename }}"
+
+- debug: var=network_hwaddr
+
+- name: template ifcfg-en*
+  template:
+    src: "ifcfg_en.j2"
+    dest: "/etc/sysconfig/network-scripts/{{ ifcfg_name }}"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  register: nw_int_template_result
+
+- name: set_fact network restart flag x template result
+  set_fact:
+    nw_restart_flag: "{{ nw_restart_flag or nw_int_template_result.changed }}"

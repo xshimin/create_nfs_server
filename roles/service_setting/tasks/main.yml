@@ -1,0 +1,18 @@
+# service_setting
+# - main.yml
+---
+- name: change state services STARTED
+  systemd:
+    name: "{{ item.servicename }}"
+    state: "started"
+    enabled: "yes"
+  with_items:
+    "{{ service_params.enable_sv }}"
+
+- name: change state services STOPPED
+  systemd:
+    name: "{{ item.servicename }}"
+    state: "stopped"
+    enabled: "no"
+  with_items:
+    "{{ service_params.disable_sv }}"

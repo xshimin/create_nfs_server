@@ -1,0 +1,25 @@
+# firewall_setting
+# - main.yml
+---
+- name: set_fact network restart flag
+  set_fact:
+    fwd_restart_flag: False
+
+- include_tasks: set_interface.yml
+  with_items:
+    "{{ firewall_params.interfaces }}"
+
+- include_tasks: setup_fwservices.yml
+  with_items:
+    "{{ firewall_params.services }}"
+
+- include_tasks: setup_fwports.yml
+  with_items:
+    "{{ firewall_params.ports }}"
+
+- name: restart firewalld.service
+  systemd:
+    name: "firewalld.service"
+    state: "restarted"
+    daemon_reload: "yes"
+  when: fwd_restart_flag == True
