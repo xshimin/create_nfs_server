@@ -1,14 +1,14 @@
 # yum_install_update
 # main.yml
 ---
-- name: yum install
+- name: yum install "{{ item }}"
   yum:
     name: "{{ item }}"
     state: present
   with_items:
   - "{{ yum_packages }}"
 
-- name: yum update
+- name: yum update "{{ item }}"
   yum:
     name: "{{ item }}"
     state: latest
