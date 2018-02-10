@@ -110,3 +110,6 @@
     name: "nfs-server.service"
     state: "restarted"
     daemon_reload: "yes"
+
+- include_tasks: add_rsync_scripts.yml
+  with_items: "{{ nfs_params.rsync_shell_params }}"

@@ -1,0 +1,52 @@
+#!/bin/bash
+
+if [ "$1" != "start" ];then
+  echo "ERROR" >&2
+  exit 1
+fi
+
+dsk={{ item.dsk }}
+nfsvol={{ item.nfsvol }}
+dst={{ item.dst }}
+parh_subdir={{ item.parh_subdir }}
+
+mkdir -p $dst
+chown root:root $dst
+chmod 700 $dst
+
+for i in $dsk $nfsvol
+do
+  if [ ! -e $i ];then
+    ls -ld $i
+    exit 1
+  fi
+done
+
+dsk_sd=`ls -l $dsk | awk '{ print $11 }' | sed 's/\.\.\/\.\.\///g'`
+
+mflg=0
+for i in $dsk $dsk_sd $dst
+do
+  mount | grep ${i} >/dev/null 2>&1 && (( mflg ++ ))
+  if [ $mflg != 0 ];then
+    echo "${i} is already mounted"
+    echo "mount failed"
+    exit 1
+  fi
+done
+
+mount -t xfs $dsk $dst
+chown root:root $dst
+chmod 700 $dst
+
+echo "rsync is started"
+echo ">>>>>>>>>>>"
+
+rsync -auvh ${nfsvol}/${parh_subdir} ${dst}/${parh_subdir}
+
+echo "<<<<<<<<<<<"
+echo "rsync was finished, rc = $?"
+
+umount $dst
+
+exit 0

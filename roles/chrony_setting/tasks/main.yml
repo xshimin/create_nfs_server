@@ -1,0 +1,18 @@
+# chrony_setting
+# - main.yml
+---
+- name: set_fact chrony restart flag
+  set_fact:
+    chronyd_restart_flag: False
+
+- include_tasks: setup_chrony_conf_replace.yml
+  with_items: "{{ chrony_params.chrony_conf_replace }}"
+
+- include_tasks: setup_chrony_conf_linein.yml
+  with_items: "{{ chrony_params.chrony_conf_linein }}"
+
+- name: restart chronyd.service
+  systemd:
+    name: "chronyd.service"
+    state: "restarted"
+  when: chronyd_restart_flag == True

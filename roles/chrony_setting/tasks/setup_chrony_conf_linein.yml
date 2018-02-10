@@ -1,0 +1,17 @@
+# chrony_setting
+# - main.yml
+#   - setup_chrony_conf_linein.yml
+---
+- name: change params chrony.conf [lineinfile]
+  lineinfile:
+    path: "/etc/chrony.conf"
+    line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter }}"
+    owner: root
+    group: root
+    mode: "0644"
+  register: chrony_conf_result
+    
+- name: set_fact chronyd restart flag
+  set_fact:
+    chronyd_restart_flag: "{{ chronyd_restart_flag or chrony_conf_result.changed }}"

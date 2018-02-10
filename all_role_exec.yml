@@ -12,3 +12,5 @@
       - nfs_setting
       - ssh_setting
       - samba_setting
+      - cron_setting
+      - chrony_setting

@@ -6,8 +6,11 @@
       - network_setting
       - group_user_setting
       - yum_install_update
+      - pip_install_update
       - service_setting
       - firewall_setting
       - nfs_setting
       - ssh_setting
       - samba_setting
+      - cron_setting
+      - chrony_setting
