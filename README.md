@@ -8,6 +8,9 @@ Testing Environment:
     ansible version: 2.4.0.0
     python version : 2.7.13
 
+    ansible version: 2.4.3.0
+    python version : 3.6.2
+
 Target Server Environment:
 
     os: CentOS
