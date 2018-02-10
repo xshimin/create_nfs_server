@@ -4,8 +4,8 @@
 ---
 - name: setup firewall ports
   firewalld:
-    zone: "{{ item.zone }}"
-    port: "{{ item.port }}"
+    zone: "{{ item.0.zone }}"
+    port: "{{ item.1.name }}"
     permanent: True
     state: enabled
   register: fw_port_result

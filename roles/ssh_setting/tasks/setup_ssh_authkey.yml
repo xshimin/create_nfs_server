@@ -1,0 +1,16 @@
+# ssh_setting
+# - main.yml
+#   - setup_ssh_authkey.yml
+---
+- name: set pubkey
+  lineinfile:
+    path: "{{ item.authfile }}"
+    line: "{{ item.pubkey }}"
+    owner: "{{ item.user }}"
+    group: "{{ item.group }}"
+    mode: "0600"
+  register: ssh_config_result
+
+- name: set_fact sshd restart flag
+  set_fact:
+    sshd_restart_flag: "{{ sshd_restart_flag or ssh_config_result.changed }}"

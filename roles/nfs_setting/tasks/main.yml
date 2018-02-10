@@ -76,12 +76,11 @@
 - name: add params /etc/exports
   lineinfile:
     path: "/etc/exports"
-    line: "{{ item.etc_exports }}"
+    line: "{{ item }}"
     owner: root
     group: root
     mode: "0644"
-  with_items:
-  - "{{ nfs_params }}"
+  with_items: "{{ nfs_params.etc_exports }}"
 
 - name: change params /etc/sysconfig/nfs
   replace:
@@ -105,8 +104,6 @@
     mode: "0644"
   with_items:
   - "{{ nfs_params.etc_modprobe_d_lockd_conf.nlockmgr }}"
-
-#- name: set samba user password
 
 - name: restart nfs-server.service
   systemd:

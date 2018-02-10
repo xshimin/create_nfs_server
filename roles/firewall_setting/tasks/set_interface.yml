@@ -4,8 +4,8 @@
 ---
 - name: set firewall interface
   firewalld:
-    zone: "{{ item.zone }}"
-    interface: "{{ item.ifname }}"
+    zone: "{{ item.0.zone }}"
+    interface: "{{ item.1.name }}"
     permanent: true
     state: enabled
   register: fw_interface_result

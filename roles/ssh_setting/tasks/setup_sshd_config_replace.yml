@@ -11,7 +11,7 @@
     group: root
     mode: "0644"
   register: ssh_config_result
-    
+
 - name: set_fact sshd restart flag
   set_fact:
     sshd_restart_flag: "{{ sshd_restart_flag or ssh_config_result.changed }}"

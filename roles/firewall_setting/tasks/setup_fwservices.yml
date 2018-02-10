@@ -4,8 +4,8 @@
 ---
 - name: setup firewall services
   firewalld:
-    zone: "{{ item.zone }}"
-    service: "{{ item.service }}"
+    zone: "{{ item.0.zone }}"
+    service: "{{ item.1.name }}"
     permanent: True
     state: enabled
   register: fw_service_result

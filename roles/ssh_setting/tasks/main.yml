@@ -5,13 +5,14 @@
   set_fact:
     sshd_restart_flag: False
 
+- include_tasks: setup_ssh_authkey.yml
+  with_items: "{{ ssh_params.ssh_pubkes }}"
+
 - include_tasks: setup_sshd_config_replace.yml
-  with_items: 
-    "{{ ssh_params.sshd_config_replace }}"
+  with_items: "{{ ssh_params.sshd_config_replace }}"
 
 - include_tasks: setup_sshd_config_linein.yml
-  with_items: 
-    "{{ ssh_params.sshd_config_linein }}"
+  with_items: "{{ ssh_params.sshd_config_linein }}"
 
 - name: restart sshd.service
   systemd:

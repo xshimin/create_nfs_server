@@ -1,0 +1,23 @@
+# pip_install_update
+# main.yml
+---
+- name: pip install --upgrade pip
+  command: pip install --upgrade pip
+  register: result_upgrade_pip
+  changed_when: "'Successfully installed' in result_upgrade_pip.stdout"
+
+- debug: var=result_upgrade_pip.stdout_lines
+
+- name: pip install "{{ item }}"
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - "{{ pip_packages }}"
+
+- name: pip update "{{ item }}"
+  pip:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+  - "{{ pip_packages }}"

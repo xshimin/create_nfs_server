@@ -6,16 +6,19 @@
     fwd_restart_flag: False
 
 - include_tasks: set_interface.yml
-  with_items:
-    "{{ firewall_params.interfaces }}"
+  with_subelements:
+    - "{{ firewall_params.fw_cfg }}"
+    - ifname
 
 - include_tasks: setup_fwservices.yml
-  with_items:
-    "{{ firewall_params.services }}"
+  with_subelements:
+    - "{{ firewall_params.fw_cfg }}"
+    - services
 
 - include_tasks: setup_fwports.yml
-  with_items:
-    "{{ firewall_params.ports }}"
+  with_subelements:
+    - "{{ firewall_params.fw_cfg }}"
+    - ports
 
 - name: restart firewalld.service
   systemd:

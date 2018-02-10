@@ -5,25 +5,39 @@
 
 - name: template /etc/samba/smb.conf
   template:
-    src: "etc_samba_smbconf_fileserver01.j2"
+    src: "{{ samba_params.smbconf_params.file }}"
     dest: "/etc/samba/smb.conf"
     owner: "root"
     group: "root"
     mode: "0644"
     backup: yes
-  register: result_smbconf
 
-- block:
-  - name: restart smb.service
-    systemd:
-      name: "{{ item }}"
-      state: "restarted"
-    with_items:
-      - "smb.service"
-      - "nmb.service"
+- name: check if samba user exists in OS
+  command: id {{ samba_params.samba_user }}
+  changed_when: False
 
-  - name: selinux
-    command: chcon -t samba_share_t {{ item }} -R
-    with_items: "{{ samba_params.smb_dir_list }}"
+- name: set samba user's password by expect
+  expect:
+    command: pdbedit -a -u {{ samba_params.samba_user }}
+    responses:
+      new password: "{{ samba_params.samba_userpass }}"
+      samba_userpass: "{{ samba_params.samba_userpass }}"
 
-  when: result_smbconf.changed == True
+- name: check if samba user exists in tdbsam
+  command: pdbedit -u {{ samba_params.samba_user }}
+  changed_when: False
+  register: result_pdbedit
+
+- debug: var=result_pdbedit.stdout_lines
+
+- name: restart smb.service
+  systemd:
+    name: "{{ item }}"
+    state: "restarted"
+  with_items:
+    - "smb.service"
+    - "nmb.service"
+
+- name: selinux
+  command: chcon -t samba_share_t {{ item }} -R
+  with_items: "{{ samba_params.smb_dir_list }}"
