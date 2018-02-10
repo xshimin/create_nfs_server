@@ -1,0 +1,11 @@
+# cron_setting
+# - main.yml
+- name: set cron root
+  cron:
+    name: "{{ item.name }}"
+    weekday: "{{ item.weekday }}"
+    minute: "{{ item.minute }}"
+    hour: "{{ item.hour }}"
+    user: root
+    job: "{{ item.job }}"
+  with_items: "{{ cron_params.cron_root }}"

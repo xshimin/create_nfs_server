@@ -1,0 +1,19 @@
+# nfs_setting
+# - main.yml
+#   - add_rsync_scripts.yml
+---
+- name: make dir
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0770"
+
+- name: copy rsync scripts
+  template:
+    src: "sync_nfsvolume.sh.j2"
+    dest: "{{ item.path }}/{{ item.shellname }}"
+    owner: root
+    group: root
+    mode: "0700"

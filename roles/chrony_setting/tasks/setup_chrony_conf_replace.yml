@@ -1,0 +1,18 @@
+# chrony_setting
+# - main.yml
+#   - setup_chrony_conf_replace.yml
+---
+- name: change params chrony_conf [replace]
+  replace:
+    path: "/etc/chrony.conf"
+    regexp: "{{ item.before }}"
+    replace: "{{ item.after }}"
+    owner: root
+    group: root
+    mode: "0644"
+  register: chrony_conf_result
+
+- name: set_fact chronyd restart flag
+  set_fact:
+    chronyd_restart_flag: "{{ chronyd_restart_flag or chrony_conf_result.changed }}"
+
